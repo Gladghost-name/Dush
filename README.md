@@ -34,10 +34,10 @@ widget = QWidget() # Creating a Window on Screen
 
 # Creating the label on the screen
 label = DLabel(widget, 
-               text='Simple Label', 
+               text='Start Developing!', 
                color='black', 
                bg='white',
-               type=Type.NONE, height=50, width=100)
+               height=50, width=100)
 label.display() # Displaying the label on screen
 
 widget.show() # Displaying the window in the application
