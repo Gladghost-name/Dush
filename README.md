@@ -33,7 +33,7 @@ app = QApplication(sys.argv) # Initializes the Application
 widget = QWidget() # Creating a Window on Screen
 
 # Creating the label on the screen
-label = DLabel(widget, 
+label = Text(widget, 
                text='Start Developing!', 
                color='black', 
                bg='white',
