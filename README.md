@@ -87,5 +87,5 @@ circular_button.display(50, 200)
 ### Requirements
 * Windows 10+ (Used in development)
 * MacOs 
-* Linux Unbuntu
+* Linux Ubuntu
 * `Python 3.10` or higher
