@@ -1,6 +1,7 @@
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.Qt import *
+import sys
 
 class SidePanel(QDockWidget):
     """ Creating a panel at  SIDE OF THE SCREEN"""
@@ -50,4 +51,28 @@ class WindowPanel(QFrame):
         self.painter.end()
 
 class DropDownPanel(QFrame):
-    def __init__(self):
+    def __init__(self, parent, width, height):
+        super().__init__(parent)
+        self.resize(width, height)
+        self.hbox = QHBoxLayout(self)
+        self.frame = QFrame(self)
+        self.frame.setStyleSheet("""background-color: yellow; border: 5px; border-radius: 5px;""")
+        self.frame.resize(self.width(), 12)
+        self.hbox.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(self.hbox)
+        self.hbox.addWidget(self.frame)
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        self.painter = QPainter(self)
+        self.painter.setPen(QPen(Qt.NoPen))
+        self.painter.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
+        self.painter.setBrush(QBrush(QColor('#fefefe')))
+        self.painter.drawRoundedRect(self.rect(), 5, 5)
+        self.painter.end()
+    def display(self, x, y):
+        self.move(x, y)
+
+app = QApplication(sys.argv)
+window = QMainWindow()
+window.resize(850, 600)
+window.show()
+sys.exit(app.exec_())
