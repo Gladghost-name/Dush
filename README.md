@@ -47,7 +47,15 @@ sys.exit(app.exec_()) # exit if the close button is pressed and loop the applica
 ![Result](images/demo-pic.png)
 
 ## Using QtApp
+#### The easiest method of creating a window in PyQt5
+```python
+from Dush.ui.app import *
 
+app = QtApp()
+app.loop()
+```
+### Results
+![Result](images/QtApp.png)
 
 we recommend to use `python 3.10` or earlier versions of python to run this application.
 ### PyQt5 Ui Coding made simple!
