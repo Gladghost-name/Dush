@@ -57,8 +57,30 @@ and using custom widgets provided by Dush. which made widget programming fun whe
 
 # Ui Widgets
 #### Buttons
+```python
+from Dush.ui.btn import *
+
+flat_button = TextFlatButton(parent, 'OK')
+flat_button.display(50, 50)
+
+raised_button = RaisedButton(parent, 'OK')
+raised_button.display(50, 100)
+
+```
 ![first button](images/buttons.png)
 
+```python
+from Dush.ui.btn import *
+
+rectangular_button = RectangularButton(window,
+                            icon_file=r'<YOUR IMAGE>.png')
+rectangular_button.display(50, 150)
+
+circular_button = CircularButton(window,
+                            icon_file=r'<YOUR IMAGE>.png')
+circular_button.display(50, 200)
+
+```
 ![second button](images/buttons_2.png)
 
 
