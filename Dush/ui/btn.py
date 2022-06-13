@@ -210,18 +210,18 @@ class IconCircularButton(QPushButton):
         self.entered = False
 
 
-# app = QApplication(sys.argv)
-# window = QMainWindow()
-# window.resize(850, 600)
-# button = RaisedButton(window, 'OK')
-# button.display(50, 50)
-# button1 = TextFlatButton(window, 'OK')
-# button1.display(50, 100)
-# button1 = RectangularButton(window,
-#                             icon_file=r'C:\Users\adara\Documents\Benzel\Games\Flexer\DushExamples\bucket-images\5_level_grid.png')
-# button1.display(50, 150)
-# button2 = IconCircularButton(window,
-#                              icon_file=r'C:\Users\adara\Documents\Benzel\Games\Flexer\DushExamples\bucket-images\5_level_grid.png')
-# button2.display(50, 200)
-# window.show()
-# sys.exit(app.exec_())
+app = QApplication(sys.argv)
+window = QMainWindow()
+window.resize(850, 600)
+button = RaisedButton(window, 'OK')
+button.display(50, 50)
+button1 = TextFlatButton(window, 'OK')
+button1.display(50, 100)
+button1 = RectangularButton(window,
+                            icon_file=r'C:\Users\adara\Documents\Benzel\Games\Flexer\DushExamples\bucket-images\5_level_grid.png')
+button1.display(50, 150)
+button2 = IconCircularButton(window,
+                             icon_file=r'C:\Users\adara\Documents\Benzel\Games\Flexer\DushExamples\bucket-images\5_level_grid.png')
+button2.display(50, 200)
+window.show()
+sys.exit(app.exec_())
