@@ -49,4 +49,5 @@ class WindowPanel(QFrame):
                                   0, self.title)
         self.painter.end()
 
-
+class DropDownPanel(QFrame):
+    def __init__(self):
