@@ -57,9 +57,9 @@ and using custom widgets provided by Dush. which made widget programming fun whe
 
 # Ui Widgets
 #### Buttons
-![Dush Logo](images/buttons.png)
+![first button](images/buttons.png)
 
-![Dush Logo](images/buttons_2.png)
+![second button](images/buttons_2.png)
 
 
 ### Requirements
