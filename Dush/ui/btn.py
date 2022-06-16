@@ -3,13 +3,15 @@ from PyQt5.QtWidgets import *
 from PyQt5.Qt import *
 import sys
 
-from PySide6.QtCore import Property
 
-
-class TextFlatButton(QPushButton):
-    def __init__(self, parent, text):
+class RectangularFlatButton(QPushButton):
+    def __init__(self, parent, text, width: int = ..., height: int = ...):
         super().__init__(parent)
         self.text = text
+        if width != ...:
+            self.setMinimumWidth(width)
+        if height != ...:
+            self.setMinimumHeight(height)
         self.resize(88, 39)
         self.clicked = False
 
@@ -20,13 +22,13 @@ class TextFlatButton(QPushButton):
             self.painter.setBrush(QColor('#CCCCCC'))
         elif self.clicked == False:
             self.painter.setBrush(QColor(5, 5, 5, 2))
-        self.painter.setFont(QFont('Helvetica', 8, 60, False))
+        self.painter.setFont(QFont('Calibri', 8, 60, False))
         self.painter.setRenderHints(
             QPainter.TextAntialiasing | QPainter.HighQualityAntialiasing | QPainter.Antialiasing)
-        self.painter.setPen(QPen(Qt.NoPen))
+        self.painter.setPen(QPen(QColor('#118BD7'), 3))
         self.painter.drawRoundedRect(self.rect(), 1, 1)
-        self.painter.setPen(QColor('#36987E'))
-        self.painter.drawText(self.rect(), Qt.AlignCenter, 'CANCEL')
+        self.painter.setPen(QColor('#5A86FF'))
+        self.painter.drawText(self.rect(), Qt.AlignCenter, self.text)
         self.painter.end()
 
     def mousePressEvent(self, e: QtGui.QMouseEvent) -> None:
@@ -40,11 +42,72 @@ class TextFlatButton(QPushButton):
         self.update()
 
 
+class TextFlatButton(QPushButton):
+    def __init__(self, parent, text, height: int = ..., box_height: int = ..., clicked_background: str = ...,
+                 hoverbackground: str = ..., hovertextcolor: str = ..., textcolor: str = ...):
+        super().__init__(parent)
+        self.resize(88, 39)
+        if box_height != ...:
+            self.setMaximumWidth(box_height)
+        if height != ...:
+            self.setMaximumHeight(height)
+        self.text = text
+        self.setStyleSheet("""background-color: red;""")
+        self.clicked = False
+        self.enter = False
+        self.cb = clicked_background
+        self.hb = hoverbackground
+        self.htc = hovertextcolor
+        self.tc = textcolor
+
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        self.painter = QPainter(self)
+        self.painter.setBrush(QColor(255, 255, 255, 1))
+        if self.clicked == True:
+            if self.cb != ...:
+                self.painter.setBrush(QColor(self.cb))
+            else:
+                self.painter.setBrush(QColor(255, 255, 255, 9))
+        elif self.clicked == False:
+            self.painter.setBrush(QColor(255, 255, 255, 1))
+        self.painter.setFont(QFont('Helvetica', 8, 60, False))
+        self.painter.setRenderHints(
+            QPainter.TextAntialiasing | QPainter.HighQualityAntialiasing | QPainter.Antialiasing)
+        self.painter.setPen(QPen(Qt.NoPen))
+        if self.enter == True:
+            if self.hb != ...:
+                self.painter.setBrush(QColor(self.hb))
+            else:
+                self.painter.setBrush(QColor(255, 255, 255, 32))
+        self.painter.drawRoundedRect(self.rect(), 1, 1)
+        if self.enter == True:
+            if self.htc != ...:
+                self.painter.setPen(QColor(self.htc))
+        self.painter.setPen(QColor('#36987E'))
+        if self.tc != ...:
+            self.painter.setPen(QColor(self.tc))
+        self.painter.drawText(self.rect(), Qt.AlignCenter, self.text)
+        self.painter.end()
+
+    def mousePressEvent(self, e: QtGui.QMouseEvent) -> None:
+        self.clicked = True
+
+    def leaveEvent(self, a0: QtCore.QEvent) -> None:
+        self.clicked = False
+        self.enter = False
+
+    def enterEvent(self, a0: QtCore.QEvent) -> None:
+        self.enter = True
+
+    def display(self, x, y):
+        self.move(x, y)
+        self.update()
+
+
 class RaisedButton(QPushButton):
-    def __init__(self, parent, text):
+    def __init__(self, parent, text, width, height):
         super().__init__(parent)
         self.text = text
-        self.resize(88, 39)
         self.effect = QGraphicsDropShadowEffect()
         self.effect.setOffset(0, 0.7)
         self.effect.setColor(QColor('#B6B6B6'))
@@ -63,6 +126,8 @@ class RaisedButton(QPushButton):
         self._animation = QVariantAnimation(self, valueChanged=self.value_changed)
         self._animation.setDuration(850)
         self._animation.setEasingCurve(self.easing)
+        self.resize(width, height)
+
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         self.painter = QPainter(self)
         self.painter.setBrush(QBrush(QColor('#36987E')))
@@ -91,7 +156,6 @@ class RaisedButton(QPushButton):
                 self.painter.setBrush(QBrush(self.radial))
                 self._animation.stop()
 
-
         self.painter.setFont(QFont('Helvetica', 8, 60, False))
         self.painter.setRenderHints(
             QPainter.TextAntialiasing | QPainter.HighQualityAntialiasing | QPainter.Antialiasing)
@@ -112,8 +176,6 @@ class RaisedButton(QPushButton):
         self.x = e.pos().x()
         self.y = e.pos().y()
         self._animation.start()
-
-
 
     def display(self, x, y):
         self.move(x, y)
@@ -209,19 +271,10 @@ class IconCircularButton(QPushButton):
     def leaveEvent(self, a0: QtCore.QEvent) -> None:
         self.entered = False
 
-
-app = QApplication(sys.argv)
-window = QMainWindow()
-window.resize(850, 600)
-button = RaisedButton(window, 'OK')
-button.display(50, 50)
-button1 = TextFlatButton(window, 'OK')
-button1.display(50, 100)
-button1 = RectangularButton(window,
-                            icon_file=r'C:\Users\adara\Documents\Benzel\Games\Flexer\DushExamples\bucket-images\5_level_grid.png')
-button1.display(50, 150)
-button2 = IconCircularButton(window,
-                             icon_file=r'C:\Users\adara\Documents\Benzel\Games\Flexer\DushExamples\bucket-images\5_level_grid.png')
-button2.display(50, 200)
-window.show()
-sys.exit(app.exec_())
+# app = QApplication(sys.argv)
+# window = QMainWindow()
+# window.resize(850, 600)
+# button1 = RectangularFlatButton(window, 'Hello, World', 100, 45)
+# button1.display(50, 200)
+# window.show()
+# sys.exit(app.exec_())

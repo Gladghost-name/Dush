@@ -5,7 +5,6 @@ from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.Qt import *
 import sys
-from label import *
 
 class MenuBar(QMenuBar):
     def __init__(self, parent):
@@ -69,8 +68,8 @@ class TitleBar(QFrame):
         self.effect = QGraphicsDropShadowEffect()
         if use_underglow == True:
             self.effect.setColor(QColor(underglow_color))
-            self.effect.setBlurRadius(6)
-            self.effect.setOffset(0.5, 0.4)
+            self.effect.setBlurRadius(8)
+            self.effect.setOffset(0.4, 0.7)
             self.setGraphicsEffect(self.effect)
         self.close_button = QPushButton('X', self)
         self.close_button.setFixedWidth(10)

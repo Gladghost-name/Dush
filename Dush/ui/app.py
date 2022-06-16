@@ -17,11 +17,12 @@ class QtApp(QApplication):
     def __init__(self, title: str = 'Dush App', icon: str = 'default',
                  x: int = None, y: int = None, width: int = 850, height: int = 600, fullscreen: bool = False,
                  bg: str = 'white', border: str = '0px',
-                 border_radius: str = '5px'):
+                 border_radius: str = '5px', name='QtApp'):
         super().__init__(sys.argv)
         self.window = QMainWindow()  # Creating the main window
         self.window.setWindowTitle(title)  # Setting the title
         self.navbar = ''
+        self.setObjectName(name)
         if x != None and y != None:
             self.window.move(x, y)  # window should move by the x and y coords
         if fullscreen is not True:
@@ -45,12 +46,12 @@ class QtApp(QApplication):
         self.screen = QtWidgets.QDesktopWidget()  # Getting the widget for the actual screen
         self.window.setCentralWidget(self.frame)  # setting the central widget for the screen
 
-    def addWidget(self, widget, gx: int = 0, gy: int = 0):
+    def addWidget(self, widget):
         """ Adding a widget to the layout of the frame"""
-        if self.frame.layout() == QGridLayout():
-            self.frame.layout().addWidget(widget, gx, gy)  # add a widget to the frame with rows and columns
-        else:
-            self.frame.layout().addWidget(widget)  # add widget to the frame normally
+        self.frame.layout().addWidget(widget)
+        self.frame.layout().setAlignment(Qt.AlignCenter)
+
+
 
     def setOrientType(self, type):
         """Setting the Orientation of the widgets in the frame"""
@@ -115,7 +116,7 @@ class QtApp(QApplication):
 
     def size(self, width, height):
         """setting the size of the window"""
-        self.window.resize(width, height)  # resizing the window
+        self.window.setFixedSize(width, height)  # resizing the window
 
     def display(self, x, y):
         """moving the window to the x and y coordinate"""
@@ -130,6 +131,9 @@ class QtApp(QApplication):
         """Adding a panel on the window"""
         self.window.addDockWidget(area, widget)  # Adding the panel in the area specified
 
+    def icon(self, file):
+        icon = QIcon(file)
+        self.window.setWindowIcon(icon)
 
 class DushWindow(QMainWindow):
     """A Much more complicated method of creating a window using the normal method of using pyqt5"""
@@ -165,12 +169,10 @@ class DushWindow(QMainWindow):
         self.screen = QtWidgets.QDesktopWidget()  # Getting the actual screen widgets which encompasses the window
         self.setCentralWidget(self.frame)  # setting the central widget to be the frame created above
 
-    def addWidget(self, widget, gx: int = 0, gy: int = 0):
+    def addWidget(self, widget):
         """ Adding a widget to the layout of the frame"""
-        if self.frame.layout() == QGridLayout():
-            self.frame.layout().addWidget(widget, gx, gy)  # add a widget to the frame with rows and columns
-        else:
-            self.frame.layout().addWidget(widget)  # add widget to the frame normally
+        widget.setFixedSize(widget.minimumSize())  # setting the fixed size of the object to be it's minimum
+        self.frame.layout().addWidget(widget)  # Adding the widget to the layout
 
     def setOrientType(self, type):
         """Setting the Orientation of the widgets in the frame"""

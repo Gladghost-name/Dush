@@ -1,32 +1,56 @@
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.Qt import *
+import sys
+
+
+class LineItem(QFrame):
+    def __init__(self, parent, color: str = ..., width: int = 2, x1: int = 0, y1: int=0, x2: int = 0, y2: int = 50):
+        super().__init__(parent)
+        self.parent = parent
+        self.color = color
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.resize(x1+x2, y1+y2)
+        self.pen_width = width
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        self.painter = QPainter(self)
+        self.painter.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
+        self.painter.setPen(QPen(QColor(self.color), self.pen_width))
+        self.painter.drawLine(self.x1, self.y1, self.x2, self.y2)
+        self.painter.end()
 
 class DrawingBoard(QFrame):
     """Still a experiment of drawing on a widget"""
 
-    def __init__(self, parent, width, height):
+    def __init__(self, parent, width, height, full_scale = False):
         super().__init__(parent)
-        self.resize(width, height)  # resizing the widget
-
+        self.parent = parent
+        self.full_scale = full_scale
+        if full_scale == True:
+            self.resize(self.parent.width(), self.parent.height())
+        else:
+            self.resize(width, height)  # resizing the widget
+    def addItem(self, item, x, y):
+        item.setParent(self)
+        item.move(x, y)
+    def display(self, x, y):
+        self.move(x, y)
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
-        """Changing the original painting of the widget"""
-        self.painter = QPainter(self)  # Creating QPainter instance in a function :/
-        self.painter.setBrush(QBrush(QColor('yellow')))  # setting the brush of the QPainter
-        self.painter.drawRect(self.rect())  # Drawing a simple rectangle
-        self.painter.end()  # Ending the paint event
+        self.painter = QPainter(self)
+        if self.full_scale == True:
+            self.resize(self.parent.width(), self.parent.height())
+        # self.painter.setPen(QPen(Qt.NoPen))
+        # self.painter.setBrush(QBrush(QColor('white')))
+        # self.painter.drawRect(self.rect())
+        self.painter.end()
 
-    def drawRectangle(self, x: int = 0, y: int = 0, width: int = 200, height: int = 80):
-        """Drawing a rectangle on the screen"""
-        self.painter.drawRect(x, y, width, height)  # Drawing a rectangle in a function; bad idea!
 
-    def stop(self):
-        """plss dont try this!"""
-        self.painter.end()  # Ending it
-        self.update()  # Updating
-
-class Circle(QFrame):
+class CircleItem(QFrame):
     """Drawing a eclipse like frame using QPainter and QFrame"""
+
     def __init__(self, parent, width, height, bg: str = '#6883FF', pen_width: int = 2, pen_color: str = ...):
         super().__init__(parent)
         self.resize(width, height)  # resizing the widget
@@ -58,7 +82,8 @@ class Circle(QFrame):
         self.move(x, y)
         self.update()
 
-class PieWidget(QFrame):
+
+class PieItem(QFrame):
     def __init__(self, parent, width, height, a, alen, color):
         super().__init__(parent)
         self.resize(width, height)
@@ -79,6 +104,51 @@ class PieWidget(QFrame):
         self.update()
 
 
+class LDCard(QFrame):
+    def __init__(self, parent, width, height):
+        super().__init__(parent)
+        self.add_image = False
+        self.image_file = ''
+        self.resize(width, height)
+        # Creating the graphics effect
+        self.effect = QGraphicsDropShadowEffect()
+        # setting the blur radius
+        self.effect.setBlurRadius(8)
+        # setting the offset of the effect
+        self.effect.setOffset(0.4, 0.7)
+        # setting a effect for the widget
+        self.setGraphicsEffect(self.effect)
+
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        self.painter = QPainter(self)
+        # removing the pen from the painter
+        self.painter.setPen(QPen(Qt.NoPen))
+        # setting the brush of the painter
+        self.painter.setBrush(QBrush(QColor('white')))
+        # Creating and upgrading the graphics
+        self.painter.setRenderHints(
+            QPainter.HighQualityAntialiasing | QPainter.Antialiasing | QPainter.TextAntialiasing)
+        # Drawing the rectangle for the card
+        self.painter.drawRoundedRect(self.rect(), 3, 3)
+        # Creating a image logic
+        if self.add_image == True:
+            # Creating a QPixmap
+            pix = QPixmap(self.image_file)
+            # Drawing the QPixmap on the screen
+            self.painter.drawPixmap(self.rect().center().x()-int(pix.width()/2), self.rect().center().y()-int(pix.height()/2), pix)
+        # Ending the paint event
+        self.painter.end()
+
+    def display(self, x, y):
+        # Updating and displaying the widget
+        self.move(x, y)
+        self.update()
+
+    def addImage(self, file):
+        self.image_file = file
+        self.add_image = True
+
+
 class DSCard(QFrame):
     def __init__(self, parent, box_width, box_height, rotate: float = ..., bg: str = '#6883FF', border_x: int = 1,
                  border_y: int = 1,
@@ -94,6 +164,10 @@ class DSCard(QFrame):
         self.pen_color = pen_color
         self.pressed = pressed
         self.bg = bg
+        self.effect = QGraphicsDropShadowEffect()
+        self.effect.setOffset(0.4, 0.7)
+        self.effect.setBlurRadius(8)
+        self.setGraphicsEffect(self.effect)
         self.box_lay = QVBoxLayout(self)
         self.setLayout(self.box_lay)
         self.setStyleSheet("""background-color: transparent;""")
@@ -149,7 +223,7 @@ class DSCard(QFrame):
         self.update()
 
 
-class Rectangle(QFrame):
+class RectangleItem(QFrame):
     def __init__(self, parent, box_width, box_height, rotate: float = ..., bg: str = '#6883FF', border_x: int = 1,
                  border_y: int = 1,
                  pen_color: str = ..., underglow_color: str = 'grey', use_underglow: bool = True):
@@ -166,8 +240,8 @@ class Rectangle(QFrame):
 
         if use_underglow == True:
             self.effect.setColor(QColor(underglow_color))
+            self.effect.setOffset(0.4, 0.7)
             self.effect.setBlurRadius(8)
-            self.effect.setOffset(0.4, 0.3)
             self.setGraphicsEffect(self.effect)
         self.setLayout(self.box_lay)
         self.setStyleSheet("""background-color: transparent;""")
@@ -202,3 +276,11 @@ class Rectangle(QFrame):
     def display(self, x, y):
         self.move(x, y)
         self.update()
+
+
+# app = QApplication(sys.argv)
+# window = QMainWindow()
+# window.resize(850, 600)
+#
+# window.show()
+# sys.exit(app.exec_())

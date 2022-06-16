@@ -72,7 +72,7 @@ class Text(QLabel):
         if font != ():
             self.setFont(QFont(font[0], font[1], font[2], font[3]))  # Setting the font of the text
         else:
-            self.setFont(QFont('Arial Rounded MT Bold', 11, 24, False))  # Setting a default font for the text
+            self.setFont(QFont('Calibri', 8, 24, False))  # Setting a default font for the text
         self.setStyleSheet(
             f"""background-color: {bg}; color: {color}; border: {str(border)}px; border-radius: {str(border_radius)}px; text-decoration: {text_decoration};""")  # Creating a stylesheet for the widget
 

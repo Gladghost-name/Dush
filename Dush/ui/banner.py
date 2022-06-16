@@ -1,6 +1,7 @@
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.Qt import *
+import sys
 
 
 class OverlapBanner(QFrame):
@@ -40,3 +41,36 @@ class OverlapBanner(QFrame):
         self.painter.drawText(self.rect().width() - 68, 20, 85,
                               self.rect().height(), 0, "Close")
         self.painter.end()
+
+
+class InfoBanner(QFrame):
+    def __init__(self, parent, width, height):
+        super().__init__(parent)
+        self.w = width
+        self.parent = parent
+        self.h = height
+        self.effect = QGraphicsDropShadowEffect()
+        self.effect.setOffset(0.4, 0.7)
+        self.effect.setBlurRadius(8)
+        self.setGraphicsEffect(self.effect)
+        self.resize(width, height)
+    def display(self, x, y):
+        self.move(x, y)
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        self.painter = QPainter(self)
+        self.painter.setPen(QPen(Qt.NoPen))
+        self.resize(self.parent.width()-86, self.parent.height()-130)
+        print(self.w, self.h)
+        self.painter.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
+        self.painter.setBrush(QBrush(QColor('#0081E7')))
+        self.painter.drawPolygon(QPolygon([QPoint(self.width()-140, 10), QPoint(self.width()+35, 10), QPoint(self.width()-int(self.width()/2), self.height())]))
+        self.painter.drawRoundedRect(self.rect().x(), self.rect().y(), self.rect().width(), self.rect().height()-45, 5, 5)
+        self.painter.end()
+
+# app = QApplication(sys.argv)
+# window = QMainWindow()
+# window.resize(850, 600)
+# banner = InfoBanner(window, window.width()-75, window.height()-150)
+# banner.display(38, window.height()-banner.height()-20)
+# window.show()
+# sys.exit(app.exec_())
