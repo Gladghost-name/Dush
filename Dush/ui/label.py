@@ -1,25 +1,31 @@
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.Qt import *
 
 
 LINK = 'link'  # Assigning a string to the LINK var!.
 
-class Link(QPushButton):
+class Link(QLabel):
     """Creating a clickable hypertext on the widget"""
 
-    def __init__(self, parent, text, cursor=Qt.PointingHandCursor, fg: str = '#5949D2', bg: str = ...,
-                 web_link: str = "https://www.google.com"):
+    def __init__(self, parent, text, cursor=Qt.PointingHandCursor,
+                 web_link: str = "https://www.google.com", fixed_width: int = ...):
         super().__init__(parent)
         self.t = text
-        self.setText(self.t)  # Modifying the text
+        self.setAlignment(Qt.AlignCenter)
+        if fixed_width != ...:
+            self.setFixedWidth(fixed_width)
+        self.setText(text)  # Modifying the text
+        self.adjustSize()  # adjust the widget size to the point size
         # Creating a stylesheet for the widget
         self.setStyleSheet("""
-        QPushButton{
+        QLabel{
             color: #5949D2;
             text-decoration: underline;
+            border: 1px;
         }
 
-        QPushButton::hover{
+        QLabel::hover{
             color: #3E69BA;
         }
 
@@ -28,12 +34,11 @@ class Link(QPushButton):
         self.setFont(QFont('Helvetica', 9, 40, False))
         # setting the hover cursor
         self.setCursor(cursor)
-        # go to the designated web address when clicked
-        self.clicked.connect(self.go_to_web_address)
-        # adjust the widget size to the point size
-        self.adjustSize()
         # creating the web link instace
         self.web_link = web_link
+
+    def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
+        self.go_to_web_address()
 
     def display(self, x, y):
         """displaying and updating the widget"""
@@ -58,11 +63,11 @@ class Text(QLabel):
             self.move(x, y)  # move the label
         self.text = text  # setting the text as a instance of self
 
-        self.effect = QGraphicsDropShadowEffect()  # Creating a graphics effect
-        self.effect.setOffset(0, 0.3)  # Setting the offset of the effect
-        self.effect.setColor(QColor('grey'))  # setting the color of the effect
-        self.effect.setBlurRadius(0.5)  # setting the blur radius of the widget
-        self.setGraphicsEffect(self.effect)  # creating the graphics effect
+        # self.effect = QGraphicsDropShadowEffect()  # Creating a graphics effect
+        # self.effect.setOffset(0.4, 0.7)  # Setting the offset of the effect
+        # self.effect.setColor(QColor('grey'))  # setting the color of the effect
+        # self.effect.setBlurRadius(2)  # setting the blur radius of the widget
+        # self.setGraphicsEffect(self.effect)  # creating the graphics effect
 
         self.pl = parent  # setting the parent to be an instance of self
         self.setText(self.text)  # setting the txt of the label
@@ -72,7 +77,7 @@ class Text(QLabel):
         if font != ():
             self.setFont(QFont(font[0], font[1], font[2], font[3]))  # Setting the font of the text
         else:
-            self.setFont(QFont('Calibri', 8, 24, False))  # Setting a default font for the text
+            self.setFont(QFont('Helvetica', 8, 12, False))  # Setting a default font for the text
         self.setStyleSheet(
             f"""background-color: {bg}; color: {color}; border: {str(border)}px; border-radius: {str(border_radius)}px; text-decoration: {text_decoration};""")  # Creating a stylesheet for the widget
 

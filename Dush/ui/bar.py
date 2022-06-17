@@ -95,7 +95,7 @@ class ToolBar(QFrame):
         super().__init__(parent)
         self.parent = parent
         self.height = height
-        self.resize(self.parent.width(), height)
+        self.setFixedHeight(height)
         self.setFrameStyle(QFrame.Raised)
         self.effect = QGraphicsDropShadowEffect()
         self.effect.setOffset(1, 0.7)
@@ -121,7 +121,6 @@ class ToolBar(QFrame):
         self.painter.drawRect(self.rect())
         self.painter.setRenderHints(
             QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
-        self.resize(self.parent.width(), self.height)
         if self.icon_file != ...:
             pix = QPixmap(self.icon_file)
         if self.change_icon_size == True:

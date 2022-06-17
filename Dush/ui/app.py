@@ -37,19 +37,20 @@ class QtApp(QApplication):
         self.status = QStatusBar()  # making the status bar instance
         icon = QLabel()  # Creating the label instance
         icon.setPixmap(QPixmap('../images/Dush.png').scaled(28, 28, Qt.KeepAspectRatio))  # Setting a image to the label
-        self.frame = QFrame()  # Creating the frame instance
-        self.vbox = QVBoxLayout()  # Creating the vbox instance
+        self.box = QFrame()
+        self.hbox = QVBoxLayout()
+        self.box.setLayout(self.hbox)
+        self.hbox.setContentsMargins(0, 0, 0, 0)
+        self.app_box = []
+        # self.frame = QFrame()  # Creating the frame instance
+        # self.hbox.addWidget(self.frame)
+        # self.vbox = QVBoxLayout()  # Creating the vbox instance
         self.bg = bg  # assigning self.bg to bg
-        self.frame.setLayout(self.vbox)  # setting the frame layout to self.vbox
-        self.frame.setStyleSheet(
-            f"""background-color: {bg}; border: {border}; border-radius: {border_radius};""")  # setting a stylesheet for the widget
+        # self.frame.setLayout(self.vbox)  # setting the frame layout to self.vbox
+        # self.frame.setStyleSheet(
+        #     f"""background-color: {bg}; border: {border}; border-radius: {border_radius};""")  # setting a stylesheet for the widget
         self.screen = QtWidgets.QDesktopWidget()  # Getting the widget for the actual screen
-        self.window.setCentralWidget(self.frame)  # setting the central widget for the screen
-
-    def addWidget(self, widget):
-        """ Adding a widget to the layout of the frame"""
-        self.frame.layout().addWidget(widget)
-        self.frame.layout().setAlignment(Qt.AlignCenter)
+        self.window.setCentralWidget(self.box)  # setting the central widget for the screen
 
 
 
@@ -134,6 +135,13 @@ class QtApp(QApplication):
     def icon(self, file):
         icon = QIcon(file)
         self.window.setWindowIcon(icon)
+
+    def addTitleBar(self, titlebar):
+        self.box.layout().addWidget(titlebar)
+
+    def addAppBox(self, appBox):
+        self.app_box.append(appBox)
+        self.box.layout().addWidget(appBox)
 
 class DushWindow(QMainWindow):
     """A Much more complicated method of creating a window using the normal method of using pyqt5"""
@@ -234,3 +242,20 @@ class DushWindow(QMainWindow):
     def addPanel(self, area, widget):
         """Adding a panel on the window"""
         self.addDockWidget(area, widget)  # Adding the panel in the area specified
+
+class AppBox(QFrame):
+    """ A AppBox Placed after the Toolbar"""
+    def __init__(self, app_window):
+        super().__init__(app_window)
+        self.vbox = QVBoxLayout()
+        self.setLayout(self.vbox)
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        self.painter = QPainter(self)
+        self.painter.setBrush(QColor('white'))
+        self.painter.setPen(QPen(Qt.NoPen))
+        self.painter.drawRect(self.rect())
+        self.painter.end()
+    def addWidget(self, widget):
+        """ Adding a widget to the layout of the frame"""
+        self.layout().addWidget(widget)
+        self.layout().setAlignment(Qt.AlignCenter)
