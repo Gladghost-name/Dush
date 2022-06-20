@@ -95,6 +95,26 @@ class ToolBar(QFrame):
         super().__init__(parent)
         self.parent = parent
         self.height = height
+        self.setStyleSheet(f"""background-color: {bg_color}""")
+        self.hbox = QHBoxLayout()
+        self.hbox.setContentsMargins(6, 0, 0,0)
+        self.setLayout(self.hbox)
+        self.title = QLabel(self)
+        self.font = font
+        self.title.setFont(QFont(self.font[0], self.font[1], self.font[2], self.font[3]))
+        self.title.setText(title)
+        self.title.setStyleSheet(f"""background-color: transparent; color: white;""")
+        self.left_box = QFrame()
+        self.bg_color = bg_color
+        self.left_box.setStyleSheet(f"""background-color: transparent;""")
+        self.left_box.hide()
+        self.added = 0
+        self.hbox.addWidget(self.left_box)
+        self.hbox.addWidget(self.title)
+        self.left_hbox = QHBoxLayout()
+        self.left_hbox.setContentsMargins(0, 0, 0, 0)
+        self.left_box.setLayout(self.left_hbox)
+        self.left_hbox.setAlignment(Qt.AlignLeft)
         self.setFixedHeight(height)
         self.setFrameStyle(QFrame.Raised)
         self.effect = QGraphicsDropShadowEffect()
@@ -102,44 +122,42 @@ class ToolBar(QFrame):
         self.icon_w = 0
         self.text_color = text_color
         self.icon_h = 0
-        self.font = font
-        self.bg_color = bg_color
         self.effect.setBlurRadius(10)
-        self.title = title
+        # self.title = title
         self.icon_file = icon_file
         self.change_icon_size = False
         self.effect.setColor(QColor('#5e5e5e'))
         self.setGraphicsEffect(self.effect)
-
-    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
-        self.painter = QPainter(self)
-        if self.bg_color != ...:
-            self.painter.setBrush(QColor(self.bg_color))
-        else:
-            self.painter.setBrush(QColor('#208FDB'))
-        self.painter.setPen(QPen(Qt.NoPen))
-        self.painter.drawRect(self.rect())
-        self.painter.setRenderHints(
-            QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
-        if self.icon_file != ...:
-            pix = QPixmap(self.icon_file)
-        if self.change_icon_size == True:
-            pix = pix.scaled(self.icon_w, self.icon_h)
-        if self.icon_file != ...:
-            pix = pix.scaled(pix.width(), self.rect().height(), Qt.KeepAspectRatio)
-            self.painter.drawPixmap(self.rect().x(), self.rect().y(), pix.width(), self.rect().height(), pix)
-        else:
-            pix = QPixmap('../window_images/window-icon.png').scaled(10, 10)
-        if self.text_color != ...:
-            self.painter.setPen(QColor(self.text_color))
-        else:
-            self.painter.setPen(QPen(Qt.white))
-        self.painter.setFont(QFont(self.font[0], self.font[1], self.font[2], self.font[3]))
-        self.painter.drawText(self.rect().x() + 10 + pix.width(), self.rect().y(), self.rect().width(),
-                              self.rect().height(),
-                              Qt.AlignVCenter, self.title)
-
-        self.painter.end()
+    #
+    # def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+    #     self.painter = QPainter(self)
+    #     if self.bg_color != ...:
+    #         self.painter.setBrush(QColor(self.bg_color))
+    #     else:
+    #         self.painter.setBrush(QColor('#208FDB'))
+    #     self.painter.setPen(QPen(Qt.NoPen))
+    #     self.painter.drawRect(self.rect())
+    #     self.painter.setRenderHints(
+    #         QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
+    #     if self.icon_file != ...:
+    #         pix = QPixmap(self.icon_file)
+    #     if self.change_icon_size == True:
+    #         pix = pix.scaled(self.icon_w, self.icon_h)
+    #     if self.icon_file != ...:
+    #         pix = pix.scaled(pix.width(), self.rect().height(), Qt.KeepAspectRatio)
+    #         self.painter.drawPixmap(self.rect().x(), self.rect().y(), pix.width(), self.rect().height(), pix)
+    #     else:
+    #         pix = QPixmap('../window_images/window-icon.png').scaled(10, 10)
+    #     if self.text_color != ...:
+    #         self.painter.setPen(QColor(self.text_color))
+    #     else:
+    #         self.painter.setPen(QPen(Qt.white))
+    #     self.painter.setFont(QFont(self.font[0], self.font[1], self.font[2], self.font[3]))
+    #     self.painter.drawText(self.rect().x() + 10 + pix.width(), self.rect().y(), self.rect().width(),
+    #                           self.rect().height(),
+    #                           Qt.AlignVCenter, self.title)
+    #
+    #     self.painter.end()
 
     def setIconSize(self, w, h):
         self.icon_w = w
@@ -150,8 +168,34 @@ class ToolBar(QFrame):
         self.move(x, y)
 
     def addLeftItem(self, widget):
-        widget.setParent(self)
-        widget.move(self.width()-widget.width()+5)
+        # widget.setParent(self.left_box)
+        self.left_box.show()
+        self.left_box.setFixedWidth(widget.width())
+        self.left_box.layout().addWidget(widget)
+        all_children = []
+        childer = []
+        num  = []
+        for children in self.left_box.children():
+            if children == self.left_box.children()[0]:
+                pass
+            elif self.left_box.children()[+1] == self.left_box.children()[-1]:
+                pass
+            else:
+                all_children.append(children)
+        for i in all_children:
+            num.append(str(i.width()))
+        joined = ' + '.join(num)
+        if joined == '':
+            pass
+        else:
+            print(str(joined))
+            self.added = eval(str(joined))
+        if self.added != 0:
+            self.left_box.setFixedWidth(self.added)
+            pass
+        # eval(joined)
+            # print(eval(joined))
+        # self.left_box.setFixedSize(widget.width()+230, self.left_box.height())
 
 class NavBarIconTextButton(QFrame):
     def __init__(self, parent, text, width, height, icon_file: str = ...):

@@ -37,7 +37,12 @@ class QtApp(QApplication):
         self.status = QStatusBar()  # making the status bar instance
         icon = QLabel()  # Creating the label instance
         icon.setPixmap(QPixmap('../images/Dush.png').scaled(28, 28, Qt.KeepAspectRatio))  # Setting a image to the label
+        self.bhbox = QHBoxLayout()
+        self.back = QFrame()
+        self.back.setLayout(self.bhbox)
+        self.bhbox.setContentsMargins(0, 0, 0, 0)
         self.box = QFrame()
+        self.bhbox.addWidget(self.box)
         self.hbox = QVBoxLayout()
         self.box.setLayout(self.hbox)
         self.hbox.setContentsMargins(0, 0, 0, 0)
@@ -50,7 +55,7 @@ class QtApp(QApplication):
         # self.frame.setStyleSheet(
         #     f"""background-color: {bg}; border: {border}; border-radius: {border_radius};""")  # setting a stylesheet for the widget
         self.screen = QtWidgets.QDesktopWidget()  # Getting the widget for the actual screen
-        self.window.setCentralWidget(self.box)  # setting the central widget for the screen
+        self.window.setCentralWidget(self.back)  # setting the central widget for the screen
 
 
 
@@ -136,12 +141,18 @@ class QtApp(QApplication):
         icon = QIcon(file)
         self.window.setWindowIcon(icon)
 
-    def addTitleBar(self, titlebar):
-        self.box.layout().addWidget(titlebar)
+    def addSideBar(self, widget):
+        self.box.addWidget(widget)
+
+    def addToolbar(self, toolbar):
+        self.box.layout().addWidget(toolbar)
 
     def addAppBox(self, appBox):
         self.app_box.append(appBox)
         self.box.layout().addWidget(appBox)
+
+    def addSideBar(self, sidebar):
+        self.bhbox.addWidget(sidebar)
 
 class DushWindow(QMainWindow):
     """A Much more complicated method of creating a window using the normal method of using pyqt5"""
@@ -162,7 +173,7 @@ class DushWindow(QMainWindow):
         if icon != 'default':
             self.setWindowIcon(QIcon(icon))  # Setting the window icon
         else:
-            self.setWindowIcon(QIcon('window-icon.png'))  # Setting the window icon as default
+            self.setWindowIcon(QIcon(r'C:\Users\adara\Documents\Benzel\Games\Flexer\Dush\window_images\window-icon.png'))  # Setting the window icon as default
         self.setStyleSheet(f"""background-color: {bg};""")  # Setting the background color of the window
         self.status = QStatusBar()  # Creating a status bar
         icon = QLabel()  # Creating the label
@@ -170,6 +181,8 @@ class DushWindow(QMainWindow):
             QPixmap('../images/Dush.png').scaled(28, 28, Qt.KeepAspectRatio))  # Creating the pixmap of the label
         self.frame = QFrame()  # Creating the frame instance
         self.vbox = QVBoxLayout()  # Creating a vbox layout which is vertical
+        # setting the alignment for the layout
+        self.vbox.setAlignment(Qt.AlignCenter)
         self.bg = bg  # setting the background color to be self.bg
         self.frame.setLayout(self.vbox)  # setting the layout to be the self.vbox
         self.frame.setStyleSheet(
@@ -179,8 +192,11 @@ class DushWindow(QMainWindow):
 
     def addWidget(self, widget):
         """ Adding a widget to the layout of the frame"""
-        widget.setFixedSize(widget.minimumSize())  # setting the fixed size of the object to be it's minimum
         self.frame.layout().addWidget(widget)  # Adding the widget to the layout
+
+    def setSpacing(self, level):
+        """setting the spacing of the layout"""
+        self.frame.layout().setSpacing(level)
 
     def setOrientType(self, type):
         """Setting the Orientation of the widgets in the frame"""
@@ -248,6 +264,7 @@ class AppBox(QFrame):
     def __init__(self, app_window):
         super().__init__(app_window)
         self.vbox = QVBoxLayout()
+        self.vbox.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.vbox)
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         self.painter = QPainter(self)

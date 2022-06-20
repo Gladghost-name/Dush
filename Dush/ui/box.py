@@ -83,8 +83,6 @@ class IterateButton(QPushButton):
         self.painter = QPainter(self)
         self.painter.setPen(QPen(Qt.NoPen))
         self.painter.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
-        self.painter.setBrush(QColor('white'))
-        self.painter.drawRoundedRect(self.rect(), 25, 25)
         pix = QPixmap(self.file)
         self.painter.drawPixmap(self.rect().x(), self.rect().y(), pix)
         self.painter.end()
@@ -95,8 +93,24 @@ class IterateText(QLabel):
         self.text = str(text)
         self.setFont(QFont(font[0], font[1], font[2], font[3]))
         self.setText(self.text)
+        self.setAlignment(Qt.AlignCenter)
         self.parent = parent
-        self.setStyleSheet("""background-color: transparent; color: grey;""")
+        self.setStyleSheet("""background-color: transparent; color: white;""")
+
+class SideBar(QFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setStyleSheet("""background-color: transparent;""")
+        self.effect = QGraphicsDropShadowEffect()
+        self.effect.setOffset(-0.7, 0.4)
+        self.effect.setBlurRadius(7)
+        self.setGraphicsEffect(self.effect)
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        self.painter = QPainter(self)
+        self.painter.setPen(QPen(QColor('#208FDB')))
+        self.painter.setBrush(QBrush(QColor('#208FDB')))
+        self.painter.drawRect(self.rect())
+        self.painter.end()
 
 class IterateBox(QFrame):
     def __init__(self, parent, from_: int = 0, to: int = 100):
@@ -122,7 +136,6 @@ class IterateBox(QFrame):
         self.right_button.setFixedWidth(30)
         self.right_button.clicked.connect(self.go_forward)
         self.hbox.addWidget(self.right_button)
-        self.text.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard | Qt.TextEditable)
         self.setStyleSheet("""background-color: transparent;""")
         self.setGraphicsEffect(self.effect)
         self.setFixedSize(150, 50)
@@ -144,7 +157,7 @@ class IterateBox(QFrame):
         self.painter.setPen(QPen(Qt.NoPen))
         self.painter.setRenderHints(
             QPainter.Antialiasing | QPainter.TextAntialiasing | QPainter.HighQualityAntialiasing)
-        self.painter.setBrush(QColor('white'))
+        self.painter.setBrush(QColor('#0075FF'))
         self.painter.drawRoundedRect(self.rect(), 25, 25)
         self.painter.end()
 

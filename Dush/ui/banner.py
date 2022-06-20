@@ -67,6 +67,73 @@ class InfoBanner(QFrame):
         self.painter.drawRoundedRect(self.rect().x(), self.rect().y(), self.rect().width(), self.rect().height()-45, 5, 5)
         self.painter.end()
 
+class Banner(QFrame):
+    """Helping to create a custom banner widget"""
+    def __init__(self, parent: any = ..., height: int = ..., bg: str = '#2686FF', color: str = 'black'):
+        super().__init__(parent)
+        self.parent = parent
+        self.w = self.parent.parent().width()
+        self.h = height
+        # self.setFixedSize(self.w, self.h)
+        # Assigning all the variables
+        self.text = ...
+        self.draw_text = False
+        self.icf = ...
+        self.size = ()
+        self.bg = bg
+        self.color  = color
+        self.ix = self.rect().x()
+        self.iy = self.rect().y()
+        self.tx = self.rect().x()
+        self.iy = self.rect().y()
+        self.draw_icon = False
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        """Drawing some elements on the widgets"""
+        self.painter = QPainter(self)
+        self.painter.setPen(QPen(Qt.NoPen))
+        self.painter.setBrush(QColor(self.bg))
+        self.painter.drawRoundedRect(self.rect(), 1, 1)
+        if self.draw_text == True:
+            self.painter.setFont(QFont('Calibri', 12, 115, False))
+            self.painter.setPen(QColor(self.color))
+            self.painter.drawText(self.rect(), 0, self.text)
+        if self.draw_icon == True:
+            self.pix = QPixmap(self.icf)
+            self.painter.drawPixmap(self.ix, self.iy, self.pix)
+        self.setFixedSize(self.parent.parent().width(), self.h)
+        self.painter.end()
+    def setText(self, s: str = ..., x: int = ..., y: int = ...):
+        """ Setting the text of the button"""
+        self.text = s
+        self.tx = x
+        self.ty = y
+        # setting the draw text var to be true
+        self.draw_text = True
+    def drawIcon(self, icon_file, x, y):
+        """Drawing an icon on the screen"""
+        self.ix = x
+        self.iy = y
+        self.icf = icon_file
+        # setting the draw_icon var to be true
+        self.draw_icon = True
+
+    def setSize(self, width: int = ..., height: int = ...):
+        """"Setting the fixed size of the widget"""
+        # setting the fixed width and height
+        self.w = width
+        self.h = height
+        self.setFixedSize(width, height)
+
+
+class TopBanner(Banner):
+    def __init__(self, parent, height, bg, color):
+        super().__init__(parent, height, bg, color)
+        self.parent = parent
+        self.move(0, 0)
+    def display(self, x, y):
+        self.move(x, y)
+        self.update()
+
 # app = QApplication(sys.argv)
 # window = QMainWindow()
 # window.resize(850, 600)

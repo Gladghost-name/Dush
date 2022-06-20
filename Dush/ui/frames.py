@@ -5,7 +5,7 @@ import sys
 
 
 class LineItem(QFrame):
-    def __init__(self, parent, color: str = ..., width: int = 2, x1: int = 0, y1: int=0, x2: int = 0, y2: int = 50):
+    def __init__(self, parent, color: str = ..., width: int = 2, x1: int = 0, y1: int = 0, x2: int = 0, y2: int = 50):
         super().__init__(parent)
         self.parent = parent
         self.color = color
@@ -13,19 +13,22 @@ class LineItem(QFrame):
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
-        self.resize(x1+x2, y1+y2)
+        self.resize(x1 + x2, y1 + y2)
         self.pen_width = width
+
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         self.painter = QPainter(self)
-        self.painter.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
+        self.painter.setRenderHints(
+            QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
         self.painter.setPen(QPen(QColor(self.color), self.pen_width))
         self.painter.drawLine(self.x1, self.y1, self.x2, self.y2)
         self.painter.end()
 
+
 class DrawingBoard(QFrame):
     """Still a experiment of drawing on a widget"""
 
-    def __init__(self, parent, width, height, full_scale = False):
+    def __init__(self, parent, width, height, full_scale=False):
         super().__init__(parent)
         self.parent = parent
         self.full_scale = full_scale
@@ -33,11 +36,14 @@ class DrawingBoard(QFrame):
             self.resize(self.parent.width(), self.parent.height())
         else:
             self.resize(width, height)  # resizing the widget
+
     def addItem(self, item, x, y):
         item.setParent(self)
         item.move(x, y)
+
     def display(self, x, y):
         self.move(x, y)
+
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         self.painter = QPainter(self)
         if self.full_scale == True:
@@ -135,7 +141,8 @@ class LDCard(QFrame):
             # Creating a QPixmap
             pix = QPixmap(self.image_file)
             # Drawing the QPixmap on the screen
-            self.painter.drawPixmap(self.rect().center().x()-int(pix.width()/2), self.rect().center().y()-int(pix.height()/2), pix)
+            self.painter.drawPixmap(self.rect().center().x() - int(pix.width() / 2),
+                                    self.rect().center().y() - int(pix.height() / 2), pix)
         # Ending the paint event
         self.painter.end()
 
@@ -152,10 +159,11 @@ class LDCard(QFrame):
 class DSCard(QFrame):
     def __init__(self, parent, box_width, box_height, rotate: float = ..., bg: str = '#6883FF', border_x: int = 1,
                  border_y: int = 1,
-                 pen_color: str = ..., pressed: any = ..., label: str = ..., label_font=('Calibri', 25, 40, False)):
+                 pen_color: str = ..., pressed: any = ..., label: str = ..., label_font=('Calibri', 25, 40, False),
+                 underglow_color: str = 'grey'):
         super().__init__(parent)
-        self.resize(box_width, box_height)
-        self.setFixedHeight(box_height)
+        # self.resize(box_width, box_height)
+        # self.setFixedHeight(box_height)
         self.border_x = border_x
         self.border_y = border_y
         self.rotate = rotate
@@ -167,6 +175,7 @@ class DSCard(QFrame):
         self.effect = QGraphicsDropShadowEffect()
         self.effect.setOffset(0.4, 0.7)
         self.effect.setBlurRadius(8)
+        self.effect.setColor(QColor(underglow_color))
         self.setGraphicsEffect(self.effect)
         self.box_lay = QVBoxLayout(self)
         self.setLayout(self.box_lay)
@@ -276,7 +285,6 @@ class RectangleItem(QFrame):
     def display(self, x, y):
         self.move(x, y)
         self.update()
-
 
 # app = QApplication(sys.argv)
 # window = QMainWindow()

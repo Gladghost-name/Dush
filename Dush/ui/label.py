@@ -57,20 +57,18 @@ class Text(QLabel):
                  height: int = ..., x: int = ..., y: int = ...,
                  bg: str = 'transparent', color: str = 'white',
                  border: int = 0,
-                 border_radius: int = 0, text_decoration: str = 'none'):
+                 border_radius: int = 0, text_decoration: str = 'none', editable: bool = False):
         super().__init__(parent)
         if x != ... and y != ...:
             self.move(x, y)  # move the label
-        self.text = text  # setting the text as a instance of self
-
-        # self.effect = QGraphicsDropShadowEffect()  # Creating a graphics effect
-        # self.effect.setOffset(0.4, 0.7)  # Setting the offset of the effect
-        # self.effect.setColor(QColor('grey'))  # setting the color of the effect
-        # self.effect.setBlurRadius(2)  # setting the blur radius of the widget
-        # self.setGraphicsEffect(self.effect)  # creating the graphics effect
-
+        self.t = text  # setting the text as a instance of self
+        if editable == True:
+            # Creating a text interaction flag
+            self.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.pl = parent  # setting the parent to be an instance of self
-        self.setText(self.text)  # setting the txt of the label
+        self.setText(self.t)  # setting the txt of the label
+        # Enabling word wrap
+        self.setWordWrap(True)
         if width != ... and height != ...:
             self.resize(width, height)  # resizing the widget to be width and height
         self.setAlignment(Qt.AlignCenter)  # Aligning the text to the center of the widget

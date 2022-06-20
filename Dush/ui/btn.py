@@ -271,6 +271,75 @@ class IconCircularButton(QPushButton):
     def leaveEvent(self, a0: QtCore.QEvent) -> None:
         self.entered = False
 
+
+class Button(QPushButton):
+    """Create a custom normal button"""
+
+    def __init__(self, parent, text: str = ..., icon_file: str = ..., bg: str = 'transparent', color: str = 'black',
+                 highlightbackground: str = 'orange',
+                 highlightforeground: str = 'black', selectbackground: str = 'yellow', selectforeground: str = 'black',
+                 border: int = 0, border_radius: int = 0, font=(), underglow_color: str = 'grey', command: any = ...,
+                 tool_tp='widget-text'):
+        super().__init__(parent)
+        self.hover = []
+        self.select = []
+        self.style = []
+        # adding a command
+        if command != ...:
+            self.clicked.connect(command)
+        # Adding a text to the button
+        if text != ...:
+            self.setText(text)
+        # setting the icon if there is a icon
+        if icon_file != ...:
+            self.pix = QIcon(icon_file)
+            # setting the icon
+            self.setIcon(self.pix)
+        # setting a effect for the widget
+        self.effect = QGraphicsDropShadowEffect()
+        self.effect.setOffset(0.4, 0.7)
+        self.effect.setBlurRadius(8)
+        self.setGraphicsEffect(self.effect)
+        # setting the font
+        if font != ():
+            self.setFont(QFont(font[0], font[1], font[2], font[3]))
+        # if widget-name is the tooltip
+        if tool_tp == 'widget-text':
+            self.setToolTip(self.text())
+        else:
+            self.setToolTip(tool_tp)
+        # creating the style sheet values
+        highlightbackground = f"""background-color: {highlightbackground};"""
+        highlightforeground = f"""color: {highlightforeground};"""
+        selectbackground = f"""background-color: {selectbackground};"""
+        selectforeground = f"""color: {selectforeground};"""
+        bg = f"""background-color: {bg};"""
+        color = f"""color: {color};"""
+        border = f"""border: {border}px;"""
+        border_radius = f"""border-radius: {border_radius}px;"""
+        # putting the values in all the lists
+        self.hover.append(highlightbackground)
+        self.hover.append(highlightforeground)
+        self.select.append(selectbackground)
+        self.select.append(selectforeground)
+        self.style.append(bg)
+        self.style.append(color)
+        self.style.append(border)
+        self.style.append(border_radius)
+        # applying all the values in the lists
+        self.hover = 'QPushButton::hover{\n\t' + '\n\t'.join(self.hover) + '\n}'
+        self.select = 'QPushButton::pressed{\n\t' + '\n\t'.join(self.select) + '\n}'
+        self.style = 'QPushButton{\n\t' + '\n\t'.join(self.style) + '\n}'
+        # creating the final combined style
+        self.final_style = []
+        self.final_style.append(self.hover)
+        self.final_style.append(self.select)
+        self.final_style.append(self.style)
+        self.final = '\n\n'.join(self.final_style)
+        # putting the values in the style sheet
+        self.setStyleSheet(self.final)
+        # self.setStyleSheet(f"""background-color: {bg}; color: {color}; border: {border}px, border-radius: {border_radius}px; """)
+
 # app = QApplication(sys.argv)
 # window = QMainWindow()
 # window.resize(850, 600)
