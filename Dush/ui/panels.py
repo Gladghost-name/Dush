@@ -71,6 +71,11 @@ class DropDownPanel(QFrame):
     def display(self, x, y):
         self.move(x, y)
 
+
+class Panel(QDockWidget):
+    def __init__(self):
+        pass
+
 app = QApplication(sys.argv)
 window = QMainWindow()
 window.resize(850, 600)
