@@ -3,7 +3,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.Qt import *
 import sys
 
-class SidePanel(QDockWidget):
+
+class SidePanel(QSplitter):
     """ Creating a panel at  SIDE OF THE SCREEN"""
 
     def __init_(self, parent):
@@ -50,6 +51,7 @@ class WindowPanel(QFrame):
                                   0, self.title)
         self.painter.end()
 
+
 class DropDownPanel(QFrame):
     def __init__(self, parent, width, height):
         super().__init__(parent)
@@ -61,23 +63,44 @@ class DropDownPanel(QFrame):
         self.hbox.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.hbox)
         self.hbox.addWidget(self.frame)
+
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         self.painter = QPainter(self)
         self.painter.setPen(QPen(Qt.NoPen))
-        self.painter.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
+        self.painter.setRenderHints(
+            QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing)
         self.painter.setBrush(QBrush(QColor('#fefefe')))
         self.painter.drawRoundedRect(self.rect(), 5, 5)
         self.painter.end()
+
     def display(self, x, y):
         self.move(x, y)
 
 
 class Panel(QDockWidget):
-    def __init__(self):
-        pass
+    def __init__(self, parent: any = ..., bg_color: str = 'white', closable: bool = False, movable: bool = False,
+                 underglow_color: str = '#CBCBCB'):
+        super().__init__(parent)
+        self.bg_color = bg_color
+        self.effect = QGraphicsDropShadowEffect()
+        self.effect.setColor(QColor(underglow_color))
+        self.effect.setOffset(0.7, 0.4)
+        self.effect.setBlurRadius(5)
+        self.setGraphicsEffect(self.effect)
+        if closable == False and movable == True:
+            self.setFeatures(QDockWidget.DockWidgetMovable)
+        elif movable == False and closable == True:
+            self.setFeatures(QDockWidget.DockWidgetClosable)
+        elif movable == False and closable == False:
+            self.setFeatures(QDockWidget.NoDockWidgetFeatures)
 
-app = QApplication(sys.argv)
-window = QMainWindow()
-window.resize(850, 600)
-window.show()
-sys.exit(app.exec_())
+    def paintEvent(self, event: QtGui.QPaintEvent) -> None:
+        self.painter = QPainter(self)
+        self.painter.setPen(QPen(Qt.NoPen))
+        self.painter.setBrush(QColor(self.bg_color))
+        self.painter.drawRect(self.rect())
+        self.painter.end()
+
+    def display(self, x, y):
+        self.move(x, y)
+        self.update()

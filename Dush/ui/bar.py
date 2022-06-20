@@ -253,3 +253,24 @@ class BottomNavBar(QFrame):
             self.widget = NavBarIconTextButton(self, label, 100, 100)
         hbox.addWidget(self.widget)
         self.hbox.addWidget(master_frame)
+
+class QtToolBar(QToolBar):
+    def __init__(self, parent, movable: bool = False, color: str = '#0074B7', width: int = ..., height: int = ...):
+        super().__init__(parent)
+        self.parent = parent
+        if width != ...:
+            self.setFixedWidth(width)
+        if height != ...:
+            self.setFixedHeight(height)
+        if movable == False:
+            self.setMovable(movable)
+        self.setStyleSheet(f"""background_color: {color}""")
+        self.effect = QGraphicsDropShadowEffect()
+        self.effect.setOffset(0.4, 0.7)
+        self.effect.setBlurRadius(8)
+        self.setGraphicsEffect(self.effect)
+    def display(self, x, y):
+        self.move(x, y)
+        self.update()
+    def place(self, area):
+        self.parent.addToolBar(area, self)

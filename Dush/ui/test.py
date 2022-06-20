@@ -4,29 +4,24 @@ from bar import *
 from label import *
 from banner import *
 from lists import *
-from widgets import *
+from panels import *
 
-app = QtApp()
-# app.size(364, 600)
-app.icon(r'..\window_images\window-icon.png')
-tool = ToolBar(app.window, 50, 'facebook', bg_color='#06B6FF')
-widget = Button(tool, icon_file='C:/Users/adara/Downloads/apps_icon.png')
-widget.setFixedSize(100, 50)
 
-widget2 = Button(tool, 'Edit', color='white', highlightforeground='white',
-                 highlightbackground='rgba(255, 255, 255, 120)', font=('Calibri', 10, 110, False),
-                 selectbackground='rgba(255, 255, 255, 180)',  selectforeground='white')
-widget2.setFixedSize(100, 50)
+class MainApp(DushWindow):
+    def __init__(self):
+        super(MainApp, self).__init__()
+        self.panel = Panel(self, bg_color='grey')
+        self.tab = QTabWidget(self.panel)
+        self.label = QLabel('Hello', self.tab)
+        self.tab.addTab(self.label, 'Document')
+        self.panel.setWidget(self.tab)
+        self.bar = QtToolBar(self)
+        self.bar.place(Qt.TopToolBarArea)
+        self.addPanel(Qt.LeftDockWidgetArea, self.panel)
+        
 
-widget3 = Button(tool, 'Image', color='white', highlightforeground='white',
-                 highlightbackground='rgba(255, 255, 255, 120)', font=('Calibri', 10, 110, False),
-                 selectbackground='rgba(255, 255, 255, 180)', selectforeground='white')
-widget3.setFixedSize(100, 50)
-
-tool.addLeftItem(widget)
-tool.addLeftItem(widget2)
-tool.addLeftItem(widget3)
-app_box = AppBox(app.window)
-app.addToolbar(tool)
-app.addAppBox(app_box)
-app.loop()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MainApp()
+    window.show()
+    sys.exit(app.exec_())
